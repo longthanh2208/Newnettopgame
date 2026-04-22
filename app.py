@@ -313,7 +313,7 @@ def handle_messages():
     user_email = request.args.get('email', '').lower()
     is_admin = request.args.get('admin') == 'true'
     if is_admin: return jsonify(messages)
-    return jsonify([m for m in messages if m['user_email'] == user_email])
+    return jsonify([m for m in messages if m['user_email'].lower() == user_email])
 
 # --- Product Reviews ---
 @app.route("/api/reviews", methods=["POST"])
