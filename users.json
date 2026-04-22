@@ -1,0 +1,21 @@
+[
+    {
+        "id": 1,
+        "name": "User Test",
+        "email": "test@example.com",
+        "password": "scrypt:32768:8:1$gsCcqv8oSAaSqg0J$0c4fd329e84a9f4114584f91332df372eab1dedd06df821edfb83e4feaa72b9708a8c99c18c8e3cb8de5b1458afb3326a5ae0e7ae0e502624dfbbd0b06e5e682"
+    },
+    {
+        "id": 2,
+        "name": "Thành Long",
+        "email": "Long.thanh22082005@gmail.com",
+        "password": "scrypt:32768:8:1$RmB4HZno014386xh$cda56a953bb9b5235d38aa4929839572d196a1172763cfa1b89820a7d7efc842176ebaa8a46c3a7ab556d18e5ccb2d7d4b60fc088373c9c2736ca8c2aca6afc4",
+        "role": "admin"
+    },
+    {
+        "id": 3,
+        "name": "Ai",
+        "email": "trainingai0100@gmail.com",
+        "password": "scrypt:32768:8:1$zf2yi86srZc6zpan$8570c5560bec9deffca1984a6b4edc90624685432221bbd7e118250c8444f9d5f69ae67c34935a18fe5b85ce294fca688fc3eb36a1f4bf4615ef22f7d05b9140"
+    }
+]

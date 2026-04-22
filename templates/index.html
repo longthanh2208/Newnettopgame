@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nettopgame - Modern E-commerce</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo" id="logo-btn">NETTOPGAME</a>
+
+                <div class="search-bar">
+                    <i data-lucide="search" size="18"></i>
+                    <input type="text" placeholder="Tìm sản phẩm, thương hiệu..." id="search-input">
+                </div>
+
+                <div class="nav-actions">
+                    <button class="nav-btn" id="theme-toggle" title="Chuyển chế độ tối/sáng">
+                        <i data-lucide="sun" id="theme-icon"></i>
+                    </button>
+                    <button class="nav-btn" id="admin-btn" title="Quản trị" style="display: none;">
+                        <i data-lucide="layout-dashboard"></i>
+                    </button>
+                    <button class="nav-btn" id="orders-btn" title="Đơn hàng của tôi" style="display: none;">
+                        <i data-lucide="package"></i>
+                    </button>
+                    <button class="nav-btn" id="auth-btn" title="Tài khoản">
+                        <i data-lucide="user"></i>
+                        <span id="user-display-name" style="font-size: 0.8rem; margin-left: 0.5rem; display: none;"></span>
+                    </button>
+                    <button class="nav-btn" id="cart-btn" title="Giỏ hàng">
+                        <i data-lucide="shopping-cart"></i>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Home Section -->
+        <section id="home-section">
+            <div class="hero">
+                <div class="hero-overlay"></div>
+                <img src="static/images/tech_banner_1776127678001.png" alt="Hero Banner" class="hero-img">
+                <div class="hero-content">
+                    <h1>Khám phá Công nghệ Mới nhất</h1>
+                    <p>Bộ sưu tập thiết bị cao cấp nhất năm 2024. Trải nghiệm mua sắm hiện đại, nhanh chóng và an toàn.
+                    </p>
+                    <button class="btn-primary">Mua ngay</button>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Sản phẩm nổi bật</h2>
+                <div class="filter-btns">
+                    <!-- Placeholder for filters if needed -->
+                </div>
+            </div>
+
+            <div class="product-grid" id="product-list">
+                <!-- Products will be rendered here by JS -->
+                <!-- Skeleton loader placeholders -->
+                <div class="product-card skeleton" style="height: 350px;"></div>
+                <div class="product-card skeleton" style="height: 350px;"></div>
+                <div class="product-card skeleton" style="height: 350px;"></div>
+                <div class="product-card skeleton" style="height: 350px;"></div>
+            </div>
+        </section>
+
+        <!-- Cart Section (Hidden by default) -->
+        <section id="cart-section" class="cart-section">
+            <div class="section-title">
+                <h2>Giỏ hàng của bạn</h2>
+                <button class="nav-btn" id="back-to-home" title="Quay lại">
+                    <i data-lucide="arrow-left"></i>
+                </button>
+            </div>
+
+            <div class="cart-container" id="cart-container">
+                <div class="cart-left">
+                    <div class="checkout-form cart-items" style="margin-bottom: 1.5rem;">
+                        <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="map-pin" size="20"></i> Thông tin nhận hàng
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div class="form-group">
+                                <label for="cust-name">Họ và tên</label>
+                                <input type="text" id="cust-name" placeholder="Nguyễn Văn A">
+                            </div>
+                            <div class="form-group">
+                                <label for="cust-phone">Số điện thoại</label>
+                                <input type="tel" id="cust-phone" placeholder="09xxx">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="cust-province">Tỉnh / Thành phố</label>
+                            <select id="cust-province">
+                                <option value="" selected disabled>Chọn Tỉnh/Thành phố</option>
+                                <!-- JS will populate this -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cust-address">Địa chỉ chi tiết</label>
+                            <input type="text" id="cust-address" placeholder="Số nhà, tên đường, phường/xã...">
+                        </div>
+                    </div>
+
+                    <div class="checkout-form cart-items" style="margin-bottom: 1.5rem;">
+                        <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="credit-card" size="20"></i> Phương thức thanh toán
+                        </h3>
+                        
+                        <div class="payment-options">
+                            <div class="payment-card" data-method="cod">
+                                <i data-lucide="banknote"></i>
+                                <span>Tiền mặt (COD)</span>
+                            </div>
+                            <div class="payment-card" data-method="bank">
+                                <i data-lucide="landmark"></i>
+                                <span>Chuyển khoản</span>
+                            </div>
+                            <div class="payment-card" data-method="momo">
+                                <i data-lucide="wallet"></i>
+                                <span>Ví Momo</span>
+                            </div>
+                        </div>
+
+                        <!-- Sub-options for Bank -->
+                        <div id="bank-sub-options" class="sub-options" style="display: none;">
+                            <button class="sub-opt-btn active" data-type="full">Trả đủ (100%)</button>
+                            <button class="sub-opt-btn" data-type="installment">Trả góp (0%)</button>
+                        </div>
+
+                        <!-- Bank Details -->
+                        <div id="bank-details" class="bank-details-box" style="display: none;">
+                            <p><strong>Thông tin chuyển khoản:</strong></p>
+                            <p>Số tài khoản: <span style="color: var(--accent-color); font-weight: 700;">9358783183</span></p>
+                            <p>Ngân hàng: <strong>Vietcombank (VCB)</strong></p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8;">Nội dung: [Số điện thoại của bạn]</p>
+                        </div>
+                    </div>
+
+                    <div class="cart-items" id="cart-items-list">
+                        <!-- Cart items will be rendered here -->
+                        <p>Giỏ hàng đang trống.</p>
+                    </div>
+                </div>
+                <div class="cart-summary">
+                    <h3>Tổng thanh toán</h3>
+                    <div class="summary-row" style="margin-top: 2rem;">
+                        <span>Tạm tính</span>
+                        <span id="subtotal">0đ</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Phí vận chuyển</span>
+                        <span id="shipping-fee">0đ</span>
+                    </div>
+                    <span id="delivery-time" class="delivery-info">Vui lòng chọn Tỉnh/Thành</span>
+                    <div class="summary-row summary-total">
+                        <span>Tổng cộng</span>
+                        <span id="total-price">0đ</span>
+                    </div>
+                    <button class="btn-primary" style="width: 100%; margin-top: 1.5rem;">Thanh toán ngay</button>
+                </div>
+            </div>
+        </section>
+        <!-- Admin Section -->
+        <section id="admin-section" class="cart-section">
+            <h1 style="margin-bottom: 2rem;">Bảng Quản Trị</h1>
+            
+            <div class="admin-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                <button class="admin-tab active" id="tab-products-btn" onclick="switchAdminTab('products')" style="padding: 0.75rem 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--card-bg); cursor: pointer; font-weight: 600;">Quản lý Sản phẩm</button>
+                <button class="admin-tab" id="tab-orders-btn" onclick="switchAdminTab('orders')" style="padding: 0.75rem 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--card-bg); cursor: pointer; font-weight: 600;">Quản lý Đơn hàng</button>
+                <button class="admin-tab" id="tab-messages-btn" onclick="switchAdminTab('messages')" style="padding: 0.75rem 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--card-bg); cursor: pointer; font-weight: 600;">Quản lý Tin nhắn</button>
+            </div>
+
+            <div id="admin-products-content">
+                <div class="cart-container">
+                    <div class="cart-left">
+                        <div class="checkout-form cart-items" style="margin-bottom: 1.5rem;">
+                            <h3 id="admin-form-title">Thêm sản phẩm mới</h3>
+                            <form id="product-form" style="margin-top: 1.5rem; display: grid; gap: 1rem;">
+                                <input type="hidden" id="edit-product-id">
+                                <div class="form-group">
+                                    <label>Tên sản phẩm</label>
+                                    <input type="text" id="p-name" required placeholder="Ví dụ: iPhone 16 Pro">
+                                </div>
+                                <div class="form-group">
+                                    <label>Giá (VNĐ)</label>
+                                    <input type="number" id="p-price" required placeholder="Ví dụ: 30000000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Danh mục</label>
+                                    <select id="p-category">
+                                        <option value="Smartphone">Smartphone</option>
+                                        <option value="Laptop">Laptop</option>
+                                        <option value="Audio">Audio</option>
+                                        <option value="Wearable">Wearable</option>
+                                        <option value="Phụ kiện">Phụ kiện</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ảnh sản phẩm</label>
+                                    <input type="file" id="p-image" accept="image/*">
+                                    <p id="p-image-name" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;"></p>
+                                </div>
+                                <div style="display: flex; gap: 1rem;">
+                                    <button type="submit" class="btn-primary" id="p-submit-btn">Lưu sản phẩm</button>
+                                    <button type="button" class="btn-primary" id="p-cancel-btn" style="display: none; background: var(--text-muted);">Hủy</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="cart-items" style="padding: 1rem; overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="text-align: left; border-bottom: 2px solid var(--border-color);">
+                                    <th style="padding: 1rem;">Ảnh</th>
+                                    <th style="padding: 1rem;">Thông tin</th>
+                                    <th style="padding: 1rem;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-product-list">
+                                <!-- Products will be listed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin-orders-content" style="display: none;">
+                <div class="cart-items" style="overflow-x: auto; padding: 1rem;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid var(--border-color);">
+                                <th style="padding: 1rem;">Mã ĐH</th>
+                                <th style="padding: 1rem;">Khách hàng</th>
+                                <th style="padding: 1rem;">Sản phẩm</th>
+                                <th style="padding: 1rem;">Tổng tiền</th>
+                                <th style="padding: 1rem;">Ngày đặt</th>
+                                <th style="padding: 1rem;">Trạng thái</th>
+                                <th style="padding: 1rem;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-order-list">
+                            <!-- Orders will be listed here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-messages-content" style="display: none;">
+                <div class="cart-items" style="padding: 1rem;">
+                    <div id="admin-chat-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Admin will see all users who have sent messages -->
+                        <p style="text-align: center; color: var(--text-muted);">Đang tải tin nhắn...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Orders Section -->
+        <section id="orders-section" class="cart-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h1>Đơn hàng của tôi</h1>
+                <button class="btn-primary" onclick="showSection('home')" style="font-size: 0.85rem; padding: 0.6rem 1.5rem;">← Tiếp tục mua sắm</button>
+            </div>
+            <div id="my-orders-list">
+                <p style="text-align: center; padding: 3rem; color: var(--text-muted);">Đang tải đơn hàng...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer style="margin-top: 5rem; padding: 3rem 0; border-top: 1px solid var(--border-color); text-align: center;">
+        <div class="container">
+            <p style="color: var(--text-muted);">&copy; 2024 NETTOPGAME. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-auth">&times;</button>
+            
+                <div id="login-form-container" class="auth-box">
+                    <h2>Chào mừng trở lại</h2>
+                    <p>Đăng nhập để tiếp tục mua sắm</p>
+                    <div class="form-group" style="margin: 1.5rem 0 1rem;">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="email@example.com">
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label>Mật khẩu</label>
+                        <input type="password" id="login-password" placeholder="••••••••">
+                        <i data-lucide="eye" class="pass-toggle" onclick="togglePass('login-password', this)"></i>
+                    </div>
+                    <a href="#" id="to-forgot" class="auth-link" style="display: block; margin-top: 0.5rem;">Quên mật khẩu?</a>
+                <button class="btn-primary" id="login-submit" style="width: 100%; margin-top: 1.5rem;">Đăng nhập</button>
+                <p class="auth-footer">Chưa có tài khoản? <a href="#" id="to-register">Đăng ký ngay</a></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form-container" class="auth-box" style="display: none;">
+                <h2>Tạo tài khoản</h2>
+                <p>Tham gia cộng đồng mua sắm hiện đại</p>
+                <div class="form-group" style="margin: 1.5rem 0 1rem;">
+                    <label>Họ và tên</label>
+                    <input type="text" id="reg-name" placeholder="Nguyễn Văn A">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" placeholder="email@example.com">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem; position: relative;">
+                    <label>Mật khẩu</label>
+                    <input type="password" id="reg-password" placeholder="••••••••">
+                    <i data-lucide="eye" class="pass-toggle" onclick="togglePass('reg-password', this)"></i>
+                </div>
+                <div class="form-group" style="position: relative;">
+                    <label>Nhập lại mật khẩu</label>
+                    <input type="password" id="reg-confirm-password" placeholder="••••••••">
+                    <i data-lucide="eye" class="pass-toggle" onclick="togglePass('reg-confirm-password', this)"></i>
+                </div>
+                <button class="btn-primary" id="reg-submit" style="width: 100%; margin-top: 1.5rem;">Đăng ký</button>
+                <p class="auth-footer">Đã có tài khoản? <a href="#" id="to-login">Đăng nhập</a></p>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div id="forgot-form-container" class="auth-box" style="display: none;">
+                <h2>Khôi phục mật khẩu</h2>
+                <p>Nhập email của bạn để nhận link reset</p>
+                <div class="form-group" style="margin: 1.5rem 0 1.5rem;">
+                    <label>Email đăng ký</label>
+                    <input type="email" id="forgot-email" placeholder="email@example.com">
+                </div>
+                <button class="btn-primary" id="forgot-submit" style="width: 100%;">Gửi yêu cầu</button>
+                <p class="auth-footer"><a href="#" id="back-to-login">Quay lại Đăng nhập</a></p>
+            </div>
+
+            <!-- Reset Password Form -->
+            <div id="reset-form-container" class="auth-box" style="display: none;">
+                <h2>Đặt lại mật khẩu</h2>
+                <p>Nhập mật khẩu mới cho tài khoản của bạn</p>
+                <div class="form-group" style="margin: 1.5rem 0 1rem; position: relative;">
+                    <label>Mật khẩu mới</label>
+                    <input type="password" id="reset-password" placeholder="••••••••">
+                    <i data-lucide="eye" class="pass-toggle" onclick="togglePass('reset-password', this)"></i>
+                </div>
+                <div class="form-group" style="position: relative;">
+                    <label>Xác nhận mật khẩu mới</label>
+                    <input type="password" id="reset-confirm" placeholder="••••••••">
+                    <i data-lucide="eye" class="pass-toggle" onclick="togglePass('reset-confirm', this)"></i>
+                </div>
+                <button class="btn-primary" id="reset-submit" style="width: 100%; margin-top: 1.5rem;">Cập nhật mật khẩu</button>
+            </div>
+
+            <!-- Profile Info (Log out) -->
+            <div id="profile-container" class="auth-box" style="display: none;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 80px; height: 80px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white;">
+                        <i data-lucide="user" size="40"></i>
+                    </div>
+                    <h2 id="profile-user-name">Người dùng</h2>
+                    <p id="profile-user-email" style="font-size: 0.9rem; opacity: 0.7;">email@example.com</p>
+                </div>
+                <button class="btn-primary" id="logout-submit" style="width: 100%; background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);">Đăng xuất</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget" id="chat-widget">
+        <div class="chat-window" id="chat-window">
+            <div class="chat-header">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i data-lucide="message-circle" size="20"></i>
+                    <span style="font-weight: 700;">Hỗ trợ trực tuyến</span>
+                </div>
+                <button id="close-chat" style="background: none; border: none; color: white; cursor: pointer;">
+                    <i data-lucide="x" size="20"></i>
+                </button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message admin">Xin chào! Chúng tôi có thể giúp gì cho bạn?</div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chat-input" placeholder="Nhập tin nhắn...">
+                <button class="btn-primary" id="send-msg-btn" style="padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="send" size="18"></i>
+                </button>
+            </div>
+        </div>
+        <div class="chat-btn" id="chat-toggle">
+            <i data-lucide="message-circle" size="28"></i>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="review-modal" class="modal">
+        <div class="modal-content review-modal-content">
+            <button class="close-modal" id="close-review">&times;</button>
+            <h2>Đánh giá sản phẩm</h2>
+            <p>Chia sẻ trải nghiệm của bạn về sản phẩm</p>
+            
+            <div class="product-review-summary" id="review-product-info">
+                <!-- JS will fill this -->
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="text-align: center; display: block; margin-bottom: 0.5rem;">Chọn mức độ hài lòng</label>
+                <div class="rating-input">
+                    <input type="radio" name="rating" value="5" id="star5"><label for="star5">★</label>
+                    <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+                    <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+                    <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+                    <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label>Nhận xét của bạn</label>
+                <textarea id="review-comment" rows="4" placeholder="Sản phẩm rất tốt, đóng gói cẩn thận..." style="width: 100%; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-family: inherit;"></textarea>
+            </div>
+
+            <button class="btn-primary" id="submit-review-btn" style="width: 100%;">Gửi đánh giá</button>
+        </div>
+    </div>
+
+    <!-- Product Detail / Reviews View Modal -->
+    <div id="product-detail-modal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <button class="close-modal" id="close-detail">&times;</button>
+            <div id="product-detail-body">
+                <!-- JS will fill this with product info and reviews -->
+            </div>
+        </div>
+    </div>
+
+    <script src="static/script.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

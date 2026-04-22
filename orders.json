@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1776135353,
+        "time": "2026-04-14 09:55:53",
+        "user": {
+            "email": "test@example.com",
+            "id": 1,
+            "name": "User Test",
+            "password": "password123"
+        },
+        "customer": {
+            "name": "test",
+            "phone": "0333333333",
+            "province": "Lâm Đồng",
+            "address": "33A đà lạt"
+        },
+        "items": [
+            {
+                "category": "Smartphone",
+                "id": 1,
+                "image": "images/product_phone_1776127757559.png",
+                "name": "iPhone 15 Pro Max Titanium",
+                "price": 34990000,
+                "quantity": 1
+            }
+        ],
+        "total": 34990000,
+        "payment": {
+            "method": "cod",
+            "type": "full"
+        },
+        "status": "Chờ xử lý"
+    }
+]
