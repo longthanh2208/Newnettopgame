@@ -404,7 +404,10 @@ function initChat() {
 }
 
 async function fetchMessages() {
-    if (!currentUser) return;
+    if (!currentUser) {
+        chatMessages.innerHTML = '<div class="message admin">Vui lòng đăng nhập để chat với chúng tôi.</div>';
+        return;
+    }
     try {
         const res = await fetch(`/api/messages?email=${encodeURIComponent(currentUser.email)}`);
         const messages = await res.json();
@@ -413,13 +416,16 @@ async function fetchMessages() {
 }
 
 function renderMessages(messages) {
-    const html = messages.map(m => `
-        <div class="message ${m.sender_role === 'admin' ? 'admin' : 'user'}">
-            ${m.content}
-            <div style="font-size: 0.6rem; opacity: 0.6; margin-top: 0.25rem;">${m.time.split(' ')[1]}</div>
-        </div>
-    `).join('');
-
+    const html = messages.map(m => {
+        const timeStr = m.time && m.time.includes(' ') ? m.time.split(' ')[1] : '';
+        return `
+            <div class="message ${m.sender_role === 'admin' ? 'admin' : 'user'}">
+                ${m.content}
+                <div style="font-size: 0.6rem; opacity: 0.6; margin-top: 0.25rem;">${timeStr}</div>
+            </div>
+        `;
+    }).join('');
+    
     const welcome = '<div class="message admin">Xin chào! Chúng tôi có thể giúp gì cho bạn?</div>';
     chatMessages.innerHTML = welcome + html;
     chatMessages.scrollTop = chatMessages.scrollHeight;
