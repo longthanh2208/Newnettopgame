@@ -212,7 +212,8 @@ def add_product():
         "name": request.form.get('name'),
         "price": int(request.form.get('price')),
         "category": request.form.get('category'),
-        "image": f"images/{filename}"
+        "image": f"images/{filename}",
+        "sold": 0
     }
     products.insert(0, new_product)
     save_data(PRODUCT_DB_PATH, products)
@@ -265,6 +266,15 @@ def manage_orders():
         }
         orders.insert(0, new_order)
         save_data(ORDER_DB_PATH, orders)
+        
+        # Increment sold count
+        products = load_data(PRODUCT_DB_PATH)
+        for item in data.get("items", []):
+            for p in products:
+                if p['id'] == item['id']:
+                    p['sold'] = p.get('sold', 0) + item.get('quantity', 1)
+        save_data(PRODUCT_DB_PATH, products)
+
         return jsonify({"status": "success", "message": "Đặt hàng thành công!", "order_id": new_order["id"]})
     return jsonify(orders)
 
@@ -280,7 +290,7 @@ def update_order(o_id):
     elif request.method == "PUT":
         data = request.json
         new_status = data.get('status')
-        if new_status in ["Chờ xử lý", "Đang giao", "Đã giao", "Đã hủy"]:
+        if new_status in ["Chờ xử lý", "Đang giao", "Đã giao", "Đã hủy", "Đã nhận", "Trả hàng"]:
             order['status'] = new_status
             save_data(ORDER_DB_PATH, orders)
             return jsonify({"status": "success", "message": "Đã cập nhật!"})
@@ -344,7 +354,7 @@ def add_review():
 @app.route("/api/reviews/<int:p_id>", methods=["GET"])
 def get_product_reviews(p_id):
     reviews = load_data(REVIEW_DB_PATH)
-    return jsonify([r for r in reviews if int(r['product_id']) == p_id])
+    return jsonify([r for r in reviews if int(r.get('product_id', 0)) == p_id])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)

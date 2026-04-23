@@ -382,6 +382,12 @@ function initChat() {
     if (!chatToggle) return;
 
     chatToggle.addEventListener('click', () => {
+        if (!currentUser) {
+            showToast("Vui lòng đăng nhập để sử dụng tính năng chat!", "error");
+            authModal.style.display = 'flex';
+            showAuthForm('login');
+            return;
+        }
         const isVisible = chatWindow.style.display === 'flex';
         chatWindow.style.display = isVisible ? 'none' : 'flex';
         if (!isVisible) {
@@ -425,7 +431,7 @@ function renderMessages(messages) {
             </div>
         `;
     }).join('');
-    
+
     const welcome = '<div class="message admin">Xin chào! Chúng tôi có thể giúp gì cho bạn?</div>';
     chatMessages.innerHTML = welcome + html;
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -552,7 +558,10 @@ window.showProductDetail = async (productId) => {
                         <span style="font-weight: 600;">${avgRating}</span>
                         <span style="color: var(--text-muted); font-size: 0.85rem;">(${reviews.length} đánh giá)</span>
                     </div>
-                    <p class="product-price" style="font-size: 1.5rem; margin-bottom: 1.5rem;">${formatPrice(product.price)}</p>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <p class="product-price" style="font-size: 1.5rem; margin: 0;">${formatPrice(product.price)}</p>
+                        <span style="padding: 0.25rem 0.75rem; background: var(--bg-color); border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Đã bán: ${product.sold || 0}</span>
+                    </div>
                     <button class="btn-primary" style="width: 100%; padding: 1rem;" onclick="addToCart(${product.id}); document.getElementById('product-detail-modal').style.display='none';">Thêm vào giỏ hàng</button>
                     <p style="margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">Sản phẩm chính hãng 100%. Bảo hành 12 tháng tại các trung tâm bảo hành ủy quyền toàn quốc. Giao hàng nhanh chóng trong 24h.</p>
                 </div>
@@ -577,6 +586,18 @@ function initAdminHandlers() {
     if (productForm) productForm.addEventListener('submit', handleProductSubmit);
     const cancelBtn = document.getElementById('p-cancel-btn');
     if (cancelBtn) cancelBtn.addEventListener('click', resetProductForm);
+
+    const adminSearchInput = document.getElementById('admin-product-search');
+    if (adminSearchInput) {
+        adminSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = products.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.category.toLowerCase().includes(query)
+            );
+            renderAdminProducts(filtered);
+        });
+    }
 }
 
 async function switchAdminTab(tab) {
@@ -594,7 +615,11 @@ async function switchAdminTab(tab) {
         btn.classList.toggle('active', id === tab);
     });
 
-    if (tab === 'products') fetchAdminProducts();
+    if (tab === 'products') {
+        const adminSearchInput = document.getElementById('admin-product-search');
+        if (adminSearchInput) adminSearchInput.value = '';
+        fetchAdminProducts();
+    }
     if (tab === 'orders') fetchOrders();
     if (tab === 'messages') fetchAdminMessages();
 }
@@ -664,6 +689,7 @@ function renderAdminProducts(items) {
             <td style="padding: 1rem;">
                 <div style="font-weight: 600;">${p.name}</div>
                 <div style="font-size: 0.8rem; color: var(--accent-color);">${p.price.toLocaleString()}đ</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Đã bán: ${p.sold || 0}</div>
             </td>
             <td style="padding: 1rem;">
                 <button class="action-btn edit-btn" onclick="editProduct(${p.id})"><i data-lucide="edit-2" size="14"></i> Sửa</button>
@@ -801,7 +827,9 @@ function renderMyOrders(orders) {
         'Chờ xử lý': { bg: '#fef3c7', color: '#92400e', icon: 'clock' },
         'Đang giao': { bg: '#dbeafe', color: '#1e40af', icon: 'truck' },
         'Đã giao': { bg: '#d1fae5', color: '#065f46', icon: 'check-circle' },
-        'Đã hủy': { bg: '#fee2e2', color: '#991b1b', icon: 'x-circle' }
+        'Đã hủy': { bg: '#fee2e2', color: '#991b1b', icon: 'x-circle' },
+        'Đã nhận': { bg: '#dcfce7', color: '#166534', icon: 'package-check' },
+        'Trả hàng': { bg: '#ffedd5', color: '#9a3412', icon: 'refresh-ccw' }
     };
 
     myOrdersList.innerHTML = orders.map(o => {
@@ -843,11 +871,54 @@ function renderMyOrders(orders) {
                     <div style="font-size: 1.25rem; font-weight: 800; color: var(--accent-color);">${o.total.toLocaleString()}đ</div>
                 </div>
             </div>
+            ${o.status === 'Đã giao' ? `
+                <div class="order-actions">
+                    <button class="btn-confirm" onclick="confirmReceived(${o.id})">
+                        <i data-lucide="check-circle" size="18"></i> Xác nhận đã nhận
+                    </button>
+                    <button class="btn-refund" onclick="requestRefund(${o.id})">
+                        <i data-lucide="refresh-ccw" size="18"></i> Trả hàng hoàn tiền
+                    </button>
+                </div>
+            ` : ''}
         </div>
         `;
     }).join('');
     lucide.createIcons();
 }
+
+window.confirmReceived = async (orderId) => {
+    if (!confirm("Bạn xác nhận đã nhận được đầy đủ hàng và hài lòng với sản phẩm?")) return;
+    try {
+        const res = await fetch(`/api/orders/${orderId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'Đã nhận' })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast("Tuyệt vời! Chúc bạn có trải nghiệm tốt với sản phẩm.");
+            fetchMyOrders();
+        }
+    } catch (err) { showToast("Lỗi khi xác nhận", "error"); }
+};
+
+window.requestRefund = async (orderId) => {
+    const reason = prompt("Vui lòng nhập lý do trả hàng:");
+    if (!reason) return;
+    try {
+        const res = await fetch(`/api/orders/${orderId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'Trả hàng' })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+            showToast("Yêu cầu trả hàng đã được gửi. Chúng tôi sẽ liên hệ bạn sớm.");
+            fetchMyOrders();
+        }
+    } catch (err) { showToast("Lỗi khi gửi yêu cầu", "error"); }
+};
 
 // --- Theme Management ---
 function initTheme() {
@@ -895,7 +966,10 @@ function renderProducts(items) {
                 <span class="product-category">${product.category}</span>
                 <h3 class="product-title" onclick="showProductDetail(${product.id})" style="cursor: pointer;">${product.name}</h3>
                 <p class="product-price">${formatPrice(product.price)}</p>
-                <button class="add-to-cart" onclick="addToCart(${product.id})">Thêm vào giỏ</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Đã bán: ${product.sold || 0}</span>
+                </div>
+                <button class="add-to-cart" onclick="addToCart(${product.id})" style="margin-top: 0.75rem;">Thêm vào giỏ</button>
             </div>
         `;
         productList.appendChild(card);
@@ -904,6 +978,13 @@ function renderProducts(items) {
 
 // --- Cart Logic ---
 window.addToCart = (productId) => {
+    console.log("addToCart clicked for product:", productId, "User:", currentUser);
+    if (!currentUser || !currentUser.email) {
+        showToast("Vui lòng đăng nhập để thêm vào giỏ hàng!", "error");
+        authModal.style.display = 'flex';
+        showAuthForm('login');
+        return;
+    }
     const product = products.find(p => p.id === productId);
     const existingItem = cart.find(item => item.id === productId);
     if (existingItem) existingItem.quantity += 1;
@@ -950,13 +1031,13 @@ function updateCartUI() {
                 <h4>${item.name}</h4>
                 <p>${formatPrice(item.price)}</p>
                 <div class="quantity-controls">
-                    <button onclick="updateQuantity(${item.id}, -1)">-</button>
+                    <button onclick="updateQuantity(${item.id}, -1)"><i data-lucide="minus" size="14"></i></button>
                     <span>${item.quantity}</span>
-                    <button onclick="updateQuantity(${item.id}, 1)">+</button>
+                    <button onclick="updateQuantity(${item.id}, 1)"><i data-lucide="plus" size="14"></i></button>
                 </div>
             </div>
-            <button class="remove-item" onclick="removeFromCart(${item.id})">
-                <i data-lucide="trash-2" size="18"></i>
+            <button class="remove-item" onclick="removeFromCart(${item.id})" title="Xóa khỏi giỏ hàng">
+                <i data-lucide="trash-2" size="20"></i>
             </button>
         </div>
     `).join('');
@@ -1002,6 +1083,12 @@ function showToast(message, type = 'success') {
 }
 
 async function handleCheckout() {
+    if (!currentUser) {
+        showToast("Vui lòng đăng nhập để thanh toán!", "error");
+        authModal.style.display = 'flex';
+        showAuthForm('login');
+        return;
+    }
     if (cart.length === 0) return alert("Giỏ hàng đang trống!");
     if (!selectedPaymentMethod) return alert("Vui lòng chọn phương thức thanh toán!");
 

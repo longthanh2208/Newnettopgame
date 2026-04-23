@@ -4,27 +4,31 @@
         "name": "iPhone 15 Pro Max Titanium",
         "price": 33990000,
         "category": "Smartphone",
-        "image": "images/product_phone_1776127757559.png"
+        "image": "images/product_phone_1776127757559.png",
+        "sold": 0
     },
     {
         "id": 2,
         "name": "Workstation Laptop Ultra Slim",
         "price": 45000000,
         "category": "Laptop",
-        "image": "images/product_laptop_1776127778017.png"
+        "image": "images/product_laptop_1776127778017.png",
+        "sold": 0
     },
     {
         "id": 3,
         "name": "Audiophile Wireless Headphones",
         "price": 8500000,
         "category": "Audio",
-        "image": "images/product_headphones_1776127795747.png"
+        "image": "images/product_headphones_1776127795747.png",
+        "sold": 0
     },
     {
         "id": 4,
         "name": "Luxury Smartwatch Series X",
         "price": 12000000,
         "category": "Wearable",
-        "image": "images/product_watch_1776127850375.png"
+        "image": "images/product_watch_1776127850375.png",
+        "sold": 0
     }
 ]
